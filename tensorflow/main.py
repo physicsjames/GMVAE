@@ -141,3 +141,28 @@ accuracy, nmi = gmvae.test(test_data, test_labels, PARAMETERS.batch_size_test)
 print("Testing phase...")
 print("Accuracy: %.5lf,  NMI: %.5lf" % (accuracy, nmi) )
 
+
+#########################################################
+## Visualization of Latent Space
+#########################################################
+# get feature representations
+test_features = gmvae.latent_features(test_data, 200)
+
+# import TSNE from scikit-learn library
+from sklearn.manifold import TSNE
+
+# reduce dimensionality to 2D, we consider a subset of data because TSNE
+# is a slow algorithm
+tsne_features = TSNE(n_components=2).fit_transform(test_features[:1000,])
+
+fig = plt.figure(figsize=(10, 6))
+
+plt.scatter(tsne_features[:, 0], tsne_features[:, 1], c=test_labels[:tsne_features.shape[0]], marker='o',
+            edgecolor='none', cmap=plt.cm.get_cmap('jet', 10), s = 10)
+plt.grid(False)
+plt.axis('off')
+plt.colorbar()
+
+plt.savefig('t-sne-2d-latent-space.png')
+
+
